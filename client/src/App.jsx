@@ -65,21 +65,10 @@ export default function App() {
           }
         />
 
-        {/* Catch-all keeps the app shell (and bottom nav) so users can recover. */}
+        {/* Unknown URLs redirect to home */}
         <Route
           path="*"
-          element={
-            <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
-              <p className="text-2xl font-semibold text-stone-800">404</p>
-              <p className="text-sm text-stone-500">We couldn't find that page.</p>
-              <Link
-                to="/"
-                className="mt-2 rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-700"
-              >
-                Back to the menu
-              </Link>
-            </div>
-          }
+          element={<Navigate to="/" replace />}
         />
       </Route>
     </Routes>

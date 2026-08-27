@@ -17,12 +17,9 @@ export default function RequireRole({ roles, children, redirectTo = '/' }) {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
-  }
-
-  if (!allowed.includes(user.role)) {
-    return <Navigate to={redirectTo} replace />;
+  if (!isAuthenticated || !allowed.includes(user.role)) {
+    window.location.replace('/');
+    return null;
   }
 
   return children;
