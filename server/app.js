@@ -48,10 +48,10 @@ const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
 app.use(
   cors({
     origin(origin, callback) {
-      // In production, enforce strict origin matching. No wildcard bypass.
-      // In development, we allow undefined origin for tools like Postman testing local API.
+      // Allow requests with no origin (like same-origin requests when Express serves the React app,
+      // or tools like Postman).
       const isDev = process.env.NODE_ENV !== 'production';
-      if (allowedOrigins.includes(origin) || (isDev && !origin)) {
+      if (!origin || allowedOrigins.includes(origin) || origin === 'http://localhost:5000' || (isDev && origin === 'http://localhost:5173')) {
         return callback(null, true);
       }
       return callback(new Error(`Origin ${origin} not allowed by CORS`));

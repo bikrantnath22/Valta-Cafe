@@ -34,10 +34,10 @@ const fixManifestConflictPlugin = () => ({
   transformIndexHtml(html, ctx) {
     if (ctx.path && ctx.path.includes('admin')) {
       // Admin page: remove the customer manifest link if VitePWA injected it
-      return html.replace(/<link rel="manifest" href="\/manifest\.json"[^>]*>/g, '');
+      return html.replace(/<link rel="manifest" href="\/manifest\.json">/g, '');
     } else {
       // Customer page: remove the admin manifest link if VitePWA injected it
-      return html.replace(/<link rel="manifest" href="\/admin-manifest\.json"[^>]*>/g, '');
+      return html.replace(/<link rel="manifest" href="\/admin-manifest\.json">/g, '');
     }
   }
 });
@@ -49,22 +49,25 @@ export default defineConfig({
     react(), 
     tailwindcss(),
     VitePWA({
-      id: 'customer',
+      id: 'valta-customer-app',
       manifestFilename: 'manifest.json',
       swDest: 'sw.js',
       scope: '/',
       injectRegister: null,
       manifest: {
         name: 'VALTA Cafe',
-        short_name: 'VALTA',
+        short_name: 'VALTA App',
         start_url: '/',
         scope: '/',
         display: 'standalone',
         theme_color: '#f59e0b',
         background_color: '#ffffff',
+        launch_handler: {
+          client_mode: 'focus-existing'
+        },
         icons: [
-          { src: '/customer-icon.svg', sizes: '192x192', type: 'image/svg+xml' },
-          { src: '/customer-icon.svg', sizes: '512x512', type: 'image/svg+xml' }
+          { src: '/customer-icon-192x192.png', sizes: '192x192', type: 'image/png' },
+          { src: '/customer-icon-512x512.png', sizes: '512x512', type: 'image/png' }
         ]
       },
       strategies: 'injectManifest',
@@ -80,22 +83,25 @@ export default defineConfig({
       }
     }),
     VitePWA({
-      id: 'admin',
+      id: 'valta-admin-app',
       manifestFilename: 'admin-manifest.json',
       swDest: 'admin-sw.js',
       scope: '/admin/',
       injectRegister: null,
       manifest: {
         name: 'VALTA Cafe Admin',
-        short_name: 'VALTA Admin',
+        short_name: 'VALTA Admn',
         start_url: '/admin/',
         scope: '/admin/',
         display: 'standalone',
         theme_color: '#1f2937',
         background_color: '#ffffff',
+        launch_handler: {
+          client_mode: 'focus-existing'
+        },
         icons: [
-          { src: '/admin-icon.svg', sizes: '192x192', type: 'image/svg+xml' },
-          { src: '/admin-icon.svg', sizes: '512x512', type: 'image/svg+xml' }
+          { src: '/admin-icon-192x192.png', sizes: '192x192', type: 'image/png' },
+          { src: '/admin-icon-512x512.png', sizes: '512x512', type: 'image/png' }
         ]
       },
       strategies: 'injectManifest',

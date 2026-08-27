@@ -8,7 +8,9 @@ export function startKeepAlive() {
     return;
   }
 
-  const pingUrl = `${url}/api/health`;
+  // If CLIENT_URL is a comma-separated list, pick the first one for the ping
+  const primaryUrl = url.split(',')[0].trim();
+  const pingUrl = `${primaryUrl}/api/health`;
   const intervalMs = 4.5 * 60 * 1000; // 4 minutes and 30 seconds
 
   console.log(`⏰ Keep-alive enabled. Pinging ${pingUrl} every 4.5 mins.`);
