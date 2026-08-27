@@ -3,7 +3,8 @@
 // Auth uses an httpOnly cookie set by the server, so every request includes
 // credentials and we never handle the token in JS.
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const RAW_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = RAW_BASE === '/api' ? '' : RAW_BASE;
 
 /**
  * Fetch JSON from the API. Throws on non-2xx responses.
