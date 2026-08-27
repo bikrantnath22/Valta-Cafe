@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/admin-icon.svg" />
+    <link rel="manifest" href="/admin-manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VALTA Admin</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/admin-main.jsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          const isDev = window.location.port !== '';
+          const swPath = isDev ? '/src/admin-sw.js' : '/admin-sw.js';
+          navigator.serviceWorker.register(swPath, { 
+            scope: '/admin/',
+            type: isDev ? 'module' : 'classic'
+          }).catch(err => console.error('Admin SW Reg Error:', err));
+        })
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/customer-icon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VALTA Cafe</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          const isDev = window.location.port !== '';
+          const swPath = isDev ? '/src/sw.js' : '/sw.js';
+          navigator.serviceWorker.register(swPath, { 
+            scope: '/',
+            type: isDev ? 'module' : 'classic'
+          }).catch(err => console.error('SW Reg Error:', err));
+        })
+      }
+    </script>
+  </body>
+</html>
