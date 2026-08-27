@@ -42,7 +42,7 @@ app.use(hpp());
 // be added later without revisiting this config.
 const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
   .split(',')
-  .map((origin) => origin.trim())
+  .map((origin) => origin.trim().replace(/\/$/, '')) // strip trailing slash just in case
   .filter(Boolean);
 
 app.use(
