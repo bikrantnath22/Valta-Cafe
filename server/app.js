@@ -71,6 +71,10 @@ if (process.env.NODE_ENV === 'production') {
   const clientBuildPath = path.join(__dirname, '../client/dist');
   app.use(express.static(clientBuildPath));
 
+  app.get('/admin*', (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'admin/index.html'));
+  });
+
   // For any route not matched by the API or static files, send the React index.html
   // so React Router can handle client-side routing.
   app.get('*', (req, res) => {
