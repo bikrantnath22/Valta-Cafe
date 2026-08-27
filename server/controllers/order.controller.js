@@ -42,8 +42,8 @@ function resolveDeliveryAddress(user, addressId, inline, fulfillmentMethod) {
   }
 
   if (inline && (inline.address || inline.phone)) {
-    if (!inline.address || !String(inline.address).trim()) {
-      return { error: 'A delivery address is required.' };
+    if (!inline.address || String(inline.address).trim().length < 4) {
+      return { error: 'Please enter a complete delivery address (at least 4 characters).' };
     }
     if (!isValidPhone(inline.phone)) {
       return { error: 'A valid phone number is required for delivery.' };

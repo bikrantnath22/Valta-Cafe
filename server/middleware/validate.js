@@ -5,12 +5,13 @@ export function validate(schema) {
       req.body = schema.parse(req.body);
       next();
     } catch (err) {
-      if (err.errors) {
+      const issues = err.issues || err.errors;
+      if (issues) {
         // Zod error
         return res.status(400).json({
           status: 'error',
-          message: 'Invalid input',
-          errors: err.errors.map(e => ({ path: e.path.join('.'), message: e.message })),
+          message: issues[0]?.message || 'Invalid input',
+          errors: issues.map(e => ({ path: e.path?.join('.') || '', message: e.message })),
         });
       }
       next(err);
