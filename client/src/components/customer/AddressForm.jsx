@@ -17,7 +17,11 @@ export default function AddressForm({ initial = null, onSubmit, onCancel, busy =
   const [errors, setErrors] = useState({});
   const validate = () => {
     const next = {};
-    if (!address.trim()) next.address = 'Please enter your delivery address.';
+    if (!address.trim()) {
+      next.address = 'Please enter your delivery address.';
+    } else if (address.trim().length < 4) {
+      next.address = 'Please enter a complete delivery address (at least 4 characters).';
+    }
     if (!phone.trim()) next.phone = 'A phone number is required.';
     else if (!isValidPhone(phone)) next.phone = 'Enter a valid 10-digit phone number.';
     setErrors(next);

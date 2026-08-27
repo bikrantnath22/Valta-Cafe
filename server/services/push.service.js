@@ -32,8 +32,12 @@ export async function sendPushNotification(query, payload) {
 
     const payloadString = JSON.stringify(payload);
 
-    const promises = subscriptions.map((subDoc) =>
-      webpush.sendNotification(subDoc.subscription, payloadString).catch(async (err) => {
+    const promises = subscriptions.map((subDoc) => {
+      const options = {
+        urgency: 'high',
+        TTL: 86400 // 24 hours
+      };
+      return webpush.sendNotification(subDoc.subscription, payloadString, options).catch(async (err) => {
         if (err.statusCode === 404 || err.statusCode === 410) {
           // Subscription has expired or is no longer valid
           console.log('Subscription expired, deleting...', subDoc._id);
@@ -41,8 +45,8 @@ export async function sendPushNotification(query, payload) {
         } else {
           console.error('Error sending push notification:', err);
         }
-      })
-    );
+      });
+    });
 
     await Promise.all(promises);
   } catch (err) {
