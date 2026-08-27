@@ -32,7 +32,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // --- Security Middleware -----------------------------------------------------
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(mongoSanitize());
 app.use(hpp());
 

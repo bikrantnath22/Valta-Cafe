@@ -53,7 +53,7 @@ export default function CustomerLayout() {
     let active = true;
     const syncCart = async () => {
       try {
-        const { items } = await getMenu();
+        const { items = [] } = await getMenu();
         if (!active) return;
         const liveById = new Map(items.map(i => [i._id, i]));
         useCart.setState(state => ({
@@ -84,7 +84,7 @@ export default function CustomerLayout() {
 
     const unsubMenu = subscribe('menu_updated', async () => {
       try {
-        const { items } = await getMenu();
+        const { items = [] } = await getMenu();
         const liveById = new Map(items.map(i => [i._id, i]));
         useCart.setState(state => ({
           items: state.items.map(cartItem => {
