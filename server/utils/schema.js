@@ -6,7 +6,7 @@ const phoneRegex = /^[0-9]{10}$/;
 
 export const addressSchema = z.object({
   label: z.string().trim().optional(),
-  address: z.string().trim().min(5, 'Address is too short'),
+  address: z.string().trim().min(4, 'Please enter a complete delivery address (at least 4 characters).'),
   phone: z.string().trim().regex(phoneRegex, 'Phone must be exactly 10 digits'),
   lat: z.number().optional(),
   lng: z.number().optional(),

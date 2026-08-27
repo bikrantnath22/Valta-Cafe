@@ -125,7 +125,7 @@ export default function CheckoutPage() {
           setSelectedId(preferred._id);
           setPickupPhone(preferred.phone); // pre-fill pickup phone if they have one
         } else {
-          setShowNewForm(true);
+          setEditingAddressId('new');
         }
       } catch (err) {
         if (active) setError(err.message);
@@ -563,7 +563,7 @@ export default function CheckoutPage() {
                                       : 'border-stone-200 bg-white text-stone-600 hover:border-amber-300 hover:bg-stone-50'
                                   }`}
                                 >
-                                  {slot.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+                                  {slot.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
                                 </button>
                               );
                             })}

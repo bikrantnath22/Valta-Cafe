@@ -2,6 +2,7 @@
 // delivery addresses (add / edit / delete / set default). Auth-gated by the
 // route, so we can assume a signed-in user here.
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { listAddresses, addAddress, updateAddress, deleteAddress } from '../../lib/api.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import AddressCard from '../../components/customer/AddressCard.jsx';
@@ -9,6 +10,7 @@ import AddressForm from '../../components/customer/AddressForm.jsx';
 
 export default function AddressesPage() {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -164,7 +166,10 @@ export default function AddressesPage() {
       {user && (
         <div className="mt-8 border-t border-stone-200 pt-6 pb-2 text-center">
           <button
-            onClick={signOut}
+            onClick={async () => {
+              await signOut();
+              navigate('/');
+            }}
             className="rounded-xl border border-stone-300 bg-white px-5 py-2.5 text-sm font-semibold text-rose-600 shadow-sm transition hover:bg-rose-50 hover:border-rose-300"
           >
             Sign Out
