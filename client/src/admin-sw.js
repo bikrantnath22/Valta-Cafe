@@ -7,20 +7,25 @@ self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', () => self.clients.claim());
 
 self.addEventListener('push', function (event) {
+  let payload = { title: 'VALTA Admin', body: 'New update from VALTA Admin!', url: '/admin/' };
   if (event.data) {
     try {
-      const data = event.data.json();
-      const options = {
-        body: data.body,
-        data: { url: data.url },
-        vibrate: [200, 100, 200],
-        requireInteraction: true
-      };
-      event.waitUntil(self.registration.showNotification(data.title, options));
+      payload = { ...payload, ...event.data.json() };
     } catch (e) {
-      console.error('Error parsing push data', e);
+      payload.body = event.data.text() || payload.body;
     }
   }
+
+  const options = {
+    body: payload.body,
+    icon: '/admin-icon-192x192.png',
+    badge: '/admin-icon-192x192.png',
+    data: { url: payload.url },
+    vibrate: [200, 100, 200],
+    requireInteraction: true
+  };
+
+  event.waitUntil(self.registration.showNotification(payload.title, options));
 });
 
 self.addEventListener('notificationclick', function (event) {
