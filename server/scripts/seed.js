@@ -12,6 +12,8 @@ import Category from '../models/Category.js';
 import FoodItem from '../models/FoodItem.js';
 import User from '../models/User.js';
 
+import bcrypt from 'bcrypt';
+
 const IMG = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=70`;
 
 const CATEGORIES = [
@@ -63,17 +65,26 @@ async function run() {
   console.log('✅ Site settings ready (open 09:00–22:00, delivery fee ₹30).');
 
   // 2) Owner for the seeded food items (createdBy is required).
-  let owner = await User.findOne({ role: { $in: ['superadmin', 'admin'] } });
+  const adminEmail = 'admin@email.com';
+  const adminPassword = 'admin123';
+  const salt = await bcrypt.genSalt(10);
+  const passwordHash = await bcrypt.hash(adminPassword, salt);
+
+  let owner = await User.findOne({ email: adminEmail });
   if (!owner) {
     owner = await User.create({
-      name: 'Seed Admin',
-      email: 'seed@valta.local',
+      name: 'Admin',
+      email: adminEmail,
       role: 'admin',
       isActive: true,
+      passwordHash,
     });
-    console.log('ℹ️  No admin found — created placeholder owner seed@valta.local (cannot log in).');
+    console.log(`ℹ️  Created admin user ${adminEmail} (password: ${adminPassword}).`);
   } else {
-    console.log(`ℹ️  Using existing ${owner.role} "${owner.email}" as item owner.`);
+    owner.passwordHash = passwordHash;
+    owner.role = 'admin';
+    await owner.save();
+    console.log(`ℹ️  Updated existing admin user "${owner.email}" with new password.`);
   }
 
   // 3) Categories (upsert by name).

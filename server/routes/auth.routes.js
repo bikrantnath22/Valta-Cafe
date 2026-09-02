@@ -1,7 +1,7 @@
 // routes/auth.routes.js — authentication endpoints.
 import { Router } from 'express';
 import passport from '../config/passport.js';
-import { googleCallback, logout, me } from '../controllers/auth.controller.js';
+import { googleCallback, logout, me, adminLogin } from '../controllers/auth.controller.js';
 import { requireAuth } from '../middleware/auth.js';
 
 const router = Router();
@@ -33,6 +33,9 @@ router.get(
   }),
   googleCallback
 );
+
+// POST /api/auth/admin-login — email/password login for admin.
+router.post('/admin-login', adminLogin);
 
 // POST /api/auth/logout — clear the auth cookie.
 router.post('/logout', logout);

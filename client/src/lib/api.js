@@ -58,6 +58,14 @@ export function logout() {
   return apiFetch('/api/auth/logout', { method: 'POST' });
 }
 
+/** POST /api/auth/admin-login */
+export function adminLogin(email, password) {
+  return apiFetch('/api/auth/admin-login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+}
+
 // --- Uploads -----------------------------------------------------------------
 
 /**

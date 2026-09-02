@@ -117,9 +117,13 @@ export default function CustomerLayout() {
       {/* Top bar */}
       <header className="sticky top-0 z-40 flex items-center justify-between gap-3 bg-white/90 px-4 py-3 backdrop-blur-md shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)] border-b border-white/20">
         <Link to="/" className="flex items-center gap-2.5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-xl text-white shadow-sm ring-2 ring-white">
-            ☕
-          </span>
+          {settings?.logo?.url ? (
+            <img src={settings.logo.url} alt="Logo" className="h-10 w-10 rounded-xl object-cover ring-2 ring-white shadow-sm" />
+          ) : (
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-xl text-white shadow-sm ring-2 ring-white">
+              ☕
+            </span>
+          )}
           <span className="text-lg font-black tracking-tight text-stone-900 drop-shadow-sm">{cafeName}</span>
         </Link>
 
@@ -150,16 +154,24 @@ export default function CustomerLayout() {
           )}
 
           {!isAuthenticated && (
-            <button
-              type="button"
-              onClick={signInWithGoogle}
-              className={`mr-2 flex items-center justify-center rounded-lg px-3 py-1.5 text-xs font-bold shadow-sm transition ${
-                blinkSignIn ? 'bg-amber-500 text-white animate-pulse ring-4 ring-amber-500/50' : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-50'
-              }`}
-            >
-              <GoogleIcon />
-              Sign In
-            </button>
+            <>
+              <Link
+                to="/admin-login"
+                className="mr-2 text-xs font-semibold text-stone-600 hover:text-stone-900 transition"
+              >
+                Admin
+              </Link>
+              <button
+                type="button"
+                onClick={signInWithGoogle}
+                className={`mr-2 flex items-center justify-center rounded-lg px-3 py-1.5 text-xs font-bold shadow-sm transition ${
+                  blinkSignIn ? 'bg-amber-500 text-white animate-pulse ring-4 ring-amber-500/50' : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-50'
+                }`}
+              >
+                <GoogleIcon />
+                Sign In
+              </button>
+            </>
           )}
 
           <Link

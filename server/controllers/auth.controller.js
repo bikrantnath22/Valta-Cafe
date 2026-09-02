@@ -1,11 +1,13 @@
 // controllers/auth.controller.js — Google OAuth callback, logout, me.
 import { signToken, cookieOptions, COOKIE_NAME } from '../utils/jwt.js';
+import User from '../models/User.js';
+import bcrypt from 'bcrypt';
 
 /** Allowed client origin (used for post-OAuth redirect). */
 function clientOrigin(req) {
   const allowed = (process.env.CLIENT_URL || 'http://localhost:5173').split(',').map(u => u.trim());
   const defaultOrigin = allowed[0];
-  
+
   if (req && req.cookies && req.cookies.oauth_origin) {
     if (allowed.includes(req.cookies.oauth_origin)) {
       return req.cookies.oauth_origin;
@@ -30,7 +32,7 @@ export function googleCallback(req, res) {
   issueTokenCookie(res, req.user);
   const redirectOrigin = clientOrigin(req);
   res.clearCookie('oauth_origin');
-  
+
   if (req.user.role === 'admin' || req.user.role === 'superadmin') {
     return res.redirect(`${redirectOrigin}/admin/`);
   }
@@ -39,11 +41,45 @@ export function googleCallback(req, res) {
 
 /** POST /api/auth/logout — clear the auth cookie. */
 export function logout(req, res) {
-  res.clearCookie(COOKIE_NAME, cookieOptions());
+  const { maxAge, ...clearOptions } = cookieOptions();
+  res.clearCookie(COOKIE_NAME, clearOptions);
   return res.json({ status: 'ok', message: 'Logged out.' });
 }
 
 /** GET /api/auth/me — return the currently authenticated user (requireAuth). */
 export function me(req, res) {
   return res.json({ status: 'ok', user: req.user.toJSON() });
+}
+
+/** POST /api/auth/admin-login — authenticate admin via email and password. */
+export async function adminLogin(req, res, next) {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ status: 'error', message: 'Email and password are required.' });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+passwordHash');
+    if (!user || !user.passwordHash) {
+      return res.status(401).json({ status: 'error', message: 'Invalid email or password.' });
+    }
+
+    if (user.role !== 'admin' && user.role !== 'superadmin') {
+      return res.status(403).json({ status: 'error', message: 'Access denied. Admins only.' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      return res.status(401).json({ status: 'error', message: 'Invalid email or password.' });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({ status: 'error', message: 'This admin account is deactivated.' });
+    }
+
+    issueTokenCookie(res, user);
+    return res.json({ status: 'ok', message: 'Logged in successfully.', user: user.toJSON() });
+  } catch (err) {
+    next(err);
+  }
 }

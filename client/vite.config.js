@@ -10,7 +10,7 @@ const adminFallbackPlugin = () => ({
   configureServer(server) {
     server.middlewares.use((req, res, next) => {
       // If request is for /admin/something, and doesn't have a file extension
-      if (req.url.startsWith('/admin') && !req.url.match(/\.[a-zA-Z0-9]+$/)) {
+      if ((req.url === '/admin' || req.url.startsWith('/admin/')) && !req.url.match(/\.[a-zA-Z0-9]+$/)) {
         req.url = '/admin/index.html';
       }
       next();
@@ -18,7 +18,7 @@ const adminFallbackPlugin = () => ({
   },
   configurePreviewServer(server) {
     server.middlewares.use((req, res, next) => {
-      if (req.url.startsWith('/admin') && !req.url.match(/\.[a-zA-Z0-9]+$/)) {
+      if ((req.url === '/admin' || req.url.startsWith('/admin/')) && !req.url.match(/\.[a-zA-Z0-9]+$/)) {
         req.url = '/admin/index.html';
       }
       next();
@@ -32,7 +32,7 @@ const fixManifestConflictPlugin = () => ({
   name: 'fix-manifest-conflict',
   enforce: 'post',
   transformIndexHtml(html, ctx) {
-    if (ctx.path && ctx.path.includes('admin')) {
+    if (ctx.path && (ctx.path === '/admin' || ctx.path.startsWith('/admin/'))) {
       // Admin page: remove the customer manifest link if VitePWA injected it
       return html.replace(/<link rel="manifest" href="\/manifest\.json">/g, '');
     } else {

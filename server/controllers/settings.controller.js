@@ -53,8 +53,8 @@ export async function updateSettings(req, res, next) {
     if (body.logo !== undefined) {
       const logo = body.logo || {};
       settings.logo = {
-        url: logo.url ? String(logo.url).trim() : undefined,
-        public_id: logo.public_id ? String(logo.public_id).trim() : undefined,
+        url: logo.url ? String(logo.url).trim() : '',
+        public_id: logo.public_id ? String(logo.public_id).trim() : '',
       };
     }
 

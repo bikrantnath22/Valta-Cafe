@@ -8,6 +8,7 @@ import OrdersPage from './pages/customer/OrdersPage.jsx';
 import OrderDetailPage from './pages/customer/OrderDetailPage.jsx';
 import NotificationsPage from './pages/customer/NotificationsPage.jsx';
 import AddressesPage from './pages/customer/AddressesPage.jsx';
+import AdminLoginPage from './pages/customer/AdminLoginPage.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 import { Toaster } from 'react-hot-toast';
@@ -23,6 +24,7 @@ export default function App() {
       <Route element={<CustomerLayout />}>
         <Route path="/" element={<MenuPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/admin-login" element={<AdminLoginPage />} />
 
         <Route
           path="/checkout"

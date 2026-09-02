@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { useNotifications } from '../../context/NotificationContext.jsx';
 import NotificationBell from './NotificationBell.jsx';
 import PWAInstallPrompt from '../shared/PWAInstallPrompt.jsx';
+import { useSettings } from '../../store/settingsStore.js';
 
 const NAV_ITEMS = [
   { to: 'orders', label: 'Orders', icon: 'orders' },
@@ -77,6 +78,9 @@ function NavIcon({ name }) {
 }
 
 function SidebarContent({ items, user, onNavigate, onSignOut }) {
+  const settings = useSettings((s) => s.settings);
+  const cafeName = settings?.cafeName || 'VALTA Cafe';
+
   const linkClasses = ({ isActive }) =>
     [
       'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition',
@@ -89,11 +93,15 @@ function SidebarContent({ items, user, onNavigate, onSignOut }) {
     <div className="flex h-full flex-col">
       {/* Brand */}
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-600 text-lg text-white shadow">
-          ☕
-        </span>
+        {settings?.logo?.url ? (
+          <img src={settings.logo.url} alt="Logo" className="h-9 w-9 rounded-full object-cover ring-2 ring-stone-800 shadow-sm" />
+        ) : (
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-600 text-lg text-white shadow">
+            ☕
+          </span>
+        )}
         <div className="leading-tight">
-          <p className="text-sm font-bold text-white">VALTA Cafe</p>
+          <p className="text-sm font-bold text-white">{cafeName}</p>
           <p className="text-[11px] font-medium uppercase tracking-wide text-amber-400">
             Admin dashboard
           </p>
@@ -158,9 +166,16 @@ function SidebarContent({ items, user, onNavigate, onSignOut }) {
 export default function AdminLayout() {
   const { user, signOut } = useAuth();
   const { subscribe } = useNotifications();
+  const fetchSettings = useSettings((s) => s.fetch);
+  const settings = useSettings((s) => s.settings);
+  const cafeName = settings?.cafeName || 'VALTA Cafe';
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   useEffect(() => {
     return subscribe('new_order', (data) => {
@@ -202,7 +217,12 @@ export default function AdminLayout() {
           </svg>
         </button>
         <span className="flex flex-1 items-center justify-center gap-2 font-bold text-stone-900">
-          <span className="text-amber-600">☕</span> VALTA Admin
+          {settings?.logo?.url ? (
+            <img src={settings.logo.url} alt="Logo" className="h-6 w-6 rounded-full object-cover" />
+          ) : (
+            <span className="text-amber-600">☕</span>
+          )}
+          {cafeName} Admin
         </span>
         <NotificationBell className="flex shrink-0" />
       </header>
